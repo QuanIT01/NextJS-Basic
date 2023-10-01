@@ -1,5 +1,6 @@
 import data from "../../../../data/properties.json";
 // import data from "@data/properties.json";
+
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
