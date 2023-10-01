@@ -1,14 +1,11 @@
 import { IconBeds, IconCross, IconLocation } from "@/components/icons";
 import { PropertyItemData } from "@/types/property.types";
-import { iteratee } from "lodash";
 import Image from "next/image";
 import Link from "next/link";
-import React, { ReactNode } from "react";
-
+import React from "react";
 interface PropertyItemProps {
   item: PropertyItemData;
 }
-
 const PropertyItem = ({ item }: PropertyItemProps) => {
   if (!item) return null;
   return (
@@ -25,6 +22,7 @@ const PropertyItem = ({ item }: PropertyItemProps) => {
         width={200}
         height={150}
         className="object-cover rounded-xl"
+        priority
       ></Image>
       <div className="flex-1">
         <span className="inline-block text-xs font-semibold text-primary py-2 px-[10px] rounded-[5px] bg-secondary mb-2">
