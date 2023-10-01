@@ -15,23 +15,20 @@
 - next/router
 - Shallow routing
 
-# Styles
+# next/image
 
-# Font
+- Tại sao lại sử dụng next/image
+- Cách sử dụng local images
+- Tại sao next/image yêu cầu sử dụng width và height(CLS)
+- LQIP
+- placeholder image
+- Remote images
+- Nếu không biết width và height thì sử dụng ra sao
+- Cách responsive hình ảnh với fill và lưu ý
+- Tìm hiểu srcset và sizes trong next/image
 
-# Image
+# next/head
 
-# Scripts
+# next/auth
 
-# Auth
-
-# Data fetching
-
-# Custom
-
-- custom \_document
-- custom \_app
-
-# Deploy
-
-# Performance
+# next api
