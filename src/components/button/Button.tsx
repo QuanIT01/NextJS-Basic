@@ -1,6 +1,7 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
 import { Spinner } from "../loading";
+
 interface ButtonProps
   extends React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
