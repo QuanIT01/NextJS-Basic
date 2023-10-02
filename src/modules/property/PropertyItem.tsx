@@ -1,4 +1,5 @@
 import { IconBeds, IconCross, IconLocation } from "@/components/icons";
+import { Skeleton } from "@/components/loading";
 import { PropertyItemData } from "@/types/property.types";
 import Image from "next/image";
 import Link from "next/link";
@@ -49,6 +50,32 @@ const PropertyItem = ({ item }: PropertyItemProps) => {
         </div>
       </div>
     </Link>
+  );
+};
+
+export const PropertyItemLoading = () => {
+  return (
+    <div className="flex gap-2">
+      <Skeleton className="w-[200px] h-[150px] rounded-xl"></Skeleton>
+      <div className="flex-1">
+        <Skeleton className="w-[50px] h-[30px] mb-2"></Skeleton>
+        <Skeleton className="w-full h-3 mb-3"></Skeleton>
+        <div className="flex items-center gap-1 mb-2 text-gray80">
+          <IconLocation></IconLocation>
+          <Skeleton className="w-5 h-3"></Skeleton>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
+            <IconBeds></IconBeds>
+            <Skeleton className="w-5 h-3"></Skeleton>
+          </div>
+          <div className="flex items-center gap-1">
+            <IconCross></IconCross>
+            <Skeleton className="w-5 h-3"></Skeleton>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

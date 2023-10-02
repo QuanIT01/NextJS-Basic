@@ -5,17 +5,9 @@ import { getProperties } from "@/store/property.service";
 import { LayoutMain } from "@/components/layout";
 import { PropertyItemData } from "@/types/property.types";
 import { useQuery } from "@tanstack/react-query";
+import PropertyList from "@/modules/property/PropertyList";
 
 const PropertyPage = () => {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["properties"],
-    queryFn: () => getProperties(),
-    staleTime: 1000 * 60 * 1,
-    // refetchOnWindowFocus: false,
-    // cacheTime: 10 * 60 * 1000,
-    // staleTime: 5 * 60 * 1000,
-  });
-  const properties = data;
   return (
     <LayoutMain>
       <div className="flex items-center justify-between mb-5">
@@ -29,33 +21,7 @@ const PropertyPage = () => {
           + Add Property
         </Link>
       </div>
-      <div className="p-5 bg-white rounded-2xl">
-        <div aria-label="filter"></div>
-        <div
-          aria-label="list"
-          className="grid grid-cols-2 gap-x-16 gap-y-6 mb-9"
-        >
-          {properties &&
-            properties.length > 0 &&
-            properties.map((item: PropertyItemData) => (
-              <PropertyItem item={item} key={item.id}></PropertyItem>
-            ))}
-        </div>
-        <div
-          aria-label="pagination"
-          className="flex items-center justify-between"
-        >
-          <p className="text-gray80">Showing 1 to 10 Propertys</p>
-          <div className="flex items-center gap-[10px]">
-            <button className="flex items-center justify-center text-white rounded-lg w-9 h-9 bg-primary">
-              1
-            </button>
-            <button className="flex items-center justify-center rounded-lg w-9 text-gray80 h-9">
-              2
-            </button>
-          </div>
-        </div>
-      </div>
+      <PropertyList></PropertyList>
     </LayoutMain>
   );
 };

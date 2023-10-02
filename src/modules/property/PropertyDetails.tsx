@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 
 import { IconCall, IconMessage, IconRating } from "@/components/icons";
+import Link from "next/link";
 
 function renderFacilityIcon(item: any): React.ReactNode {
   // switch (name) {
@@ -56,7 +57,7 @@ const PropertyDetails = () => {
       ></HeadContent>
       <div className="p-5 bg-grayfc rounded-2xl">
         <h2 className="flex items-center gap-5 mb-6 text-xl font-medium">
-          <span>
+          <Link href="/properties">
             <svg
               width="9"
               height="16"
@@ -71,7 +72,7 @@ const PropertyDetails = () => {
                 fill="#11142D"
               />
             </svg>
-          </span>
+          </Link>
           Details
         </h2>
         <div className="grid grid-cols-[2fr_1fr] gap-6">
@@ -188,7 +189,7 @@ const PropertyDetails = () => {
               </div>
             </div>
             <div aria-label="map">
-              <Image src="/map.png" alt="" />
+              <img src="/map.png" alt="" />
             </div>
             <div>
               <Button
