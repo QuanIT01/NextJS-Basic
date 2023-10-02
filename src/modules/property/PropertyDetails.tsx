@@ -20,6 +20,7 @@ function renderFacilityIcon(name: string): React.ReactNode {
   //   case "Beds": {
   //     return <IconBeds></IconBeds>;
   //   }
+  //
   //   default:
   //     return <></>;
   // }
