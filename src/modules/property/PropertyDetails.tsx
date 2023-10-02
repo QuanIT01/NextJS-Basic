@@ -1,21 +1,17 @@
-/* eslint-disable @next/next/no-img-element */
-import HeadContent from "@/components/HeadContent";
-import { Button } from "@/components/button";
-import {
-  IconBeds,
-  IconCall,
-  IconMessage,
-  IconRating,
-} from "@/components/icons";
-import { Spinner } from "@/components/loading";
-import { getProperty } from "@/store/property.service";
-import { useQuery } from "@tanstack/react-query";
+import capitalizeStr from "@/utils/toCapitalize";
 import dynamic from "next/dynamic";
+import HeadContent from "@/components/HeadContent";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import React from "react";
+import { Button } from "@/components/button";
+import { getProperty } from "@/store/property.service";
+import { Spinner } from "@/components/loading";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 
-function renderFacilityIcon(name: string): React.ReactNode {
+import { IconCall, IconMessage, IconRating } from "@/components/icons";
+
+function renderFacilityIcon(item: any): React.ReactNode {
   // switch (name) {
   //   case "Beds": {
   //     return <IconBeds></IconBeds>;
@@ -24,10 +20,20 @@ function renderFacilityIcon(name: string): React.ReactNode {
   //   default:
   //     return <></>;
   // }
-  const Icon = dynamic(
-    () => import(`../../components/icons/Icon${name.replace(/ /, "")}`)
+
+  const [name, count] = item;
+  const newName = capitalizeStr(name, "-").replace(/ /g, "");
+  const Icon = dynamic(() => import(`../../components/icons/Icon${newName}`));
+  return (
+    <>
+      <span>
+        <Icon></Icon>
+      </span>
+      <span className="text-sm font-medium">
+        {count} {newName}
+      </span>
+    </>
   );
-  return <Icon></Icon>;
 }
 const PropertyDetails = () => {
   const router = useRouter();
@@ -40,7 +46,7 @@ const PropertyDetails = () => {
   });
   if (!data || error) return null;
   if (isLoading) return <Spinner></Spinner>;
-  const facilities = Object.entries(data.info || {});
+  const facilities = Object.entries(data.facility || {});
   const agent = data.agent;
   return (
     <>
@@ -134,10 +140,7 @@ const PropertyDetails = () => {
                 {facilities.length > 0 &&
                   facilities.map((item, index) => (
                     <div className="flex items-center gap-1" key={index}>
-                      <span>{renderFacilityIcon(item[0])}</span>
-                      <span className="text-sm font-medium">
-                        {item[1]} {item[0]}
-                      </span>
+                      <span>{renderFacilityIcon(item)}</span>
                     </div>
                   ))}
               </div>
@@ -185,7 +188,7 @@ const PropertyDetails = () => {
               </div>
             </div>
             <div aria-label="map">
-              <img src="/map.png" alt="" />
+              <Image src="/map.png" alt="" />
             </div>
             <div>
               <Button

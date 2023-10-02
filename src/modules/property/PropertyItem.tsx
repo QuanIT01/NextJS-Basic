@@ -38,11 +38,13 @@ const PropertyItem = ({ item }: PropertyItemProps) => {
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
             <IconBeds></IconBeds>
-            <span className="text-xs font-medium">{item.info?.beds} Beds</span>
+            <span className="text-xs font-medium">
+              {item.facility?.beds} Beds
+            </span>
           </div>
           <div className="flex items-center gap-1">
             <IconCross></IconCross>
-            <span className="text-xs font-medium">{item.info?.area}</span>
+            <span className="text-xs font-medium">{item.facility?.area}</span>
           </div>
         </div>
       </div>

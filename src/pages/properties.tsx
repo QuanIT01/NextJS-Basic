@@ -1,10 +1,10 @@
-import { LayoutMain } from "@/components/layout";
+import Link from "next/link";
 import PropertyItem from "@/modules/property/PropertyItem";
+import React from "react";
 import { getProperties } from "@/store/property.service";
+import { LayoutMain } from "@/components/layout";
 import { PropertyItemData } from "@/types/property.types";
 import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
-import React from "react";
 
 const PropertyPage = () => {
   const { data, isLoading, error } = useQuery({
@@ -37,7 +37,7 @@ const PropertyPage = () => {
         >
           {properties &&
             properties.length > 0 &&
-            properties.map((item: PropertyItemData, index: number) => (
+            properties.map((item: PropertyItemData) => (
               <PropertyItem item={item} key={item.id}></PropertyItem>
             ))}
         </div>
