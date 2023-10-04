@@ -5,33 +5,40 @@ import { getProperties } from "@/store/property.service";
 import { PropertyItemData } from "@/types/property.types";
 import { useQuery } from "@tanstack/react-query";
 import { statusData } from "@/constants/general.const";
-
-type filter = {
-  address: string;
-  status: string;
-  country: string;
-  type: string;
-  state: string;
-};
+import { TFilter } from "@/types/general.types";
+import { debounce } from "lodash";
 
 const PropertyList = () => {
-  const [filter, setFilter] = useState<filter>({
-    address: "",
+  const [filter, setFilter] = useState<TFilter>({
+    text: "",
     status: "",
     country: "",
     type: "",
     state: "",
   });
   const { data, isLoading, error } = useQuery({
-    queryKey: ["properties"],
-    queryFn: () => getProperties(),
-    staleTime: 1000 * 60 * 1,
+    queryKey: ["properties", filter.text],
+    queryFn: () =>
+      getProperties({
+        text: filter.text,
+      }),
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 10 * 60 * 1000,
     // refetchOnWindowFocus: false,
     // cacheTime: 10 * 60 * 1000,
     // staleTime: 5 * 60 * 1000,
   });
   const properties = data;
-  if (error || properties?.length === 0) return null;
+  const handleFilterProperty = debounce(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFilter({
+        ...filter,
+        text: e.target.value,
+      });
+    },
+    500
+  );
+  if (error) return null;
 
   return (
     <div className="p-5 bg-white rounded-2xl">
@@ -53,6 +60,7 @@ const PropertyList = () => {
             type="text"
             className="w-full text-xs font-medium bg-transparent outline-none"
             placeholder="Enter an address, city or Zip code"
+            onChange={handleFilterProperty}
           />
         </div>
         <Dropdown data={statusData}></Dropdown>
