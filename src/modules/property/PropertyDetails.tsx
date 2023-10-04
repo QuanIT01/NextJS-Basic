@@ -8,8 +8,13 @@ import { getProperty } from "@/store/property.service";
 import { Spinner } from "@/components/loading";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-
-import { IconCall, IconMessage, IconRating } from "@/components/icons";
+/* eslint-disable @next/next/no-img-element */
+import {
+  IconBeds,
+  IconCall,
+  IconMessage,
+  IconRating,
+} from "@/components/icons";
 import Link from "next/link";
 
 function renderFacilityIcon(item: any): React.ReactNode {
@@ -17,11 +22,9 @@ function renderFacilityIcon(item: any): React.ReactNode {
   //   case "Beds": {
   //     return <IconBeds></IconBeds>;
   //   }
-  //
   //   default:
   //     return <></>;
   // }
-
   const [name, count] = item;
   const newName = capitalizeStr(name, "-").replace(/ /g, "");
   const Icon = dynamic(() => import(`../../components/icons/Icon${newName}`));
@@ -141,7 +144,7 @@ const PropertyDetails = () => {
                 {facilities.length > 0 &&
                   facilities.map((item, index) => (
                     <div className="flex items-center gap-1" key={index}>
-                      <span>{renderFacilityIcon(item)}</span>
+                      {renderFacilityIcon(item)}
                     </div>
                   ))}
               </div>

@@ -1,42 +1,56 @@
 import {
   IconBuilding,
+  IconDashboard,
   IconMessage,
   IconPerson,
   IconProfile,
   IconStar,
 } from "@/components/icons";
-import { IconDashboard } from "@/components/icons";
-import { TSidebarLink } from "@/types/general.types";
+import { TDropdownData, TSidebarLink } from "@/types/general.types";
 
 export const sidebarLinks: TSidebarLink[] = [
   {
     title: "Dashboard",
-    icon: <IconDashboard></IconDashboard>,
+    icon: <IconDashboard />,
     path: "/",
   },
   {
     title: "Property",
-    icon: <IconBuilding></IconBuilding>,
+    icon: <IconBuilding />,
     path: "/properties",
   },
   {
     title: "Agent",
-    icon: <IconPerson></IconPerson>,
+    icon: <IconPerson />,
     path: "/agent",
   },
   {
     title: "Review",
-    icon: <IconStar></IconStar>,
+    icon: <IconStar />,
     path: "/review",
   },
   {
     title: "Message",
-    icon: <IconMessage></IconMessage>,
+    icon: <IconMessage />,
     path: "/message",
   },
   {
     title: "My Profile",
-    icon: <IconProfile></IconProfile>,
+    icon: <IconProfile />,
     path: "/my-profile",
+  },
+];
+export const statusData: TDropdownData[] = [
+  {
+    value: "",
+    label: "Any Status",
+  },
+  {
+    value: "sale",
+    label: "For Sale",
+  },
+  {
+    value: "rent",
+    label: "For Rent",
   },
 ];
