@@ -1,14 +1,17 @@
 import Dropdown from "@/components/dropdown/Dropdown";
 import PropertyItem, { PropertyItemLoading } from "./PropertyItem";
 import React, { useState } from "react";
+import { debounce } from "lodash";
 import { getProperties } from "@/store/property.service";
 import { PropertyItemData } from "@/types/property.types";
-import { useQuery } from "@tanstack/react-query";
 import { statusData } from "@/constants/general.const";
-import { TFilter } from "@/types/general.types";
-import { debounce } from "lodash";
+import { TFilter, TProperStatus } from "@/types/general.types";
+import { useQuery } from "@tanstack/react-query";
 
 const PropertyList = () => {
+  const [selected, setSelected] = useState({
+    status: "Any Status",
+  });
   const [filter, setFilter] = useState<TFilter>({
     text: "",
     status: "",
@@ -17,10 +20,11 @@ const PropertyList = () => {
     state: "",
   });
   const { data, isLoading, error } = useQuery({
-    queryKey: ["properties", filter.text],
+    queryKey: ["properties", filter.text, filter.status],
     queryFn: () =>
       getProperties({
         text: filter.text,
+        status: filter.status,
       }),
     staleTime: 1000 * 60 * 5,
     cacheTime: 10 * 60 * 1000,
@@ -38,6 +42,18 @@ const PropertyList = () => {
     },
     500
   );
+
+  const handleFilterStats = (value: TProperStatus) => {
+    setFilter({
+      ...filter,
+      status: value,
+    });
+    const foundStatus = statusData.find((item) => item.value === value);
+    setSelected({
+      ...selected,
+      status: value ? foundStatus?.label || "" : "Any Status",
+    });
+  };
   if (error) return null;
 
   return (
@@ -63,7 +79,11 @@ const PropertyList = () => {
             onChange={handleFilterProperty}
           />
         </div>
-        <Dropdown data={statusData}></Dropdown>
+        <Dropdown
+          selected={selected.status}
+          data={statusData}
+          onClick={handleFilterStats}
+        ></Dropdown>
         <Dropdown selected="Any Type"></Dropdown>
         <Dropdown selected="All countries"></Dropdown>
         <Dropdown selected="All States"></Dropdown>

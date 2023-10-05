@@ -1,7 +1,7 @@
-import { API_URL } from "@/config";
-import { TFilter } from "@/types/general.types";
-import { PropertyItemData } from "@/types/property.types";
 import axios from "axios";
+import { API_URL } from "@/config";
+import { PropertyItemData } from "@/types/property.types";
+import { TFilter } from "@/types/general.types";
 const example = {
   title: "Metro Jayakarta Hotel & Spa",
   address: "North NewYork, USA",
