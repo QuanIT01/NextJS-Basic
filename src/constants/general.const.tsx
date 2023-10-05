@@ -6,7 +6,11 @@ import {
   IconProfile,
   IconStar,
 } from "@/components/icons";
-import { TDropdownData, TSidebarLink } from "@/types/general.types";
+import {
+  TProppertyStatusData,
+  TProppertyTypeData,
+  TSidebarLink,
+} from "@/types/general.types";
 
 export const sidebarLinks: TSidebarLink[] = [
   {
@@ -40,7 +44,7 @@ export const sidebarLinks: TSidebarLink[] = [
     path: "/my-profile",
   },
 ];
-export const statusData: TDropdownData[] = [
+export const propertyStatusData: TProppertyStatusData[] = [
   {
     value: "",
     label: "Any Status",
@@ -54,3 +58,32 @@ export const statusData: TDropdownData[] = [
     label: "For Rent",
   },
 ];
+
+export const propertypeData: TProppertyTypeData[] = [
+  {
+    value: "",
+    label: "Any type",
+  },
+  {
+    value: "apartment",
+    label: "Apartments",
+  },
+  {
+    value: "houses",
+    label: "House",
+  },
+  {
+    value: "commercial",
+    label: "Commercial",
+  },
+  {
+    value: "garages",
+    label: "Garages",
+  },
+  {
+    value: "lots",
+    label: "Lots",
+  },
+];
+
+export const ITEMS_PER_PAGE = 2;

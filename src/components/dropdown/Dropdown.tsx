@@ -1,11 +1,11 @@
 import { Menu } from "@headlessui/react";
 import React from "react";
-import { TDropdownData, TProperStatus } from "../../types/general.types";
+import { TDropdownData, TProppertyStatusData } from "../../types/general.types";
 
 interface DropdownProps {
   selected?: string;
   data?: TDropdownData[];
-  onClick?: (value: TProperStatus) => void;
+  onClick?: (value: any) => void;
 }
 
 const Dropdown = ({

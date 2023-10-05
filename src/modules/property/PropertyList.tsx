@@ -4,13 +4,27 @@ import React, { useState } from "react";
 import { debounce } from "lodash";
 import { getProperties } from "@/store/property.service";
 import { PropertyItemData } from "@/types/property.types";
-import { statusData } from "@/constants/general.const";
-import { TFilter, TProperStatus } from "@/types/general.types";
+import {
+  ITEMS_PER_PAGE,
+  propertyStatusData,
+  propertypeData,
+} from "@/constants/general.const";
+import {
+  TFilter,
+  TProppertyStatusData,
+  TProppertyTypeData,
+} from "@/types/general.types";
 import { useQuery } from "@tanstack/react-query";
+import { IconSearch } from "@/components/icons";
+import { twMerge } from "tailwind-merge";
 
 const PropertyList = () => {
+  const [page, setPage] = useState<number>(1);
   const [selected, setSelected] = useState({
-    status: "Any Status",
+    statusText: "Any Status",
+    typeText: "Any Type",
+    countryText: "All countries",
+    stateText: "All States",
   });
   const [filter, setFilter] = useState<TFilter>({
     text: "",
@@ -20,11 +34,14 @@ const PropertyList = () => {
     state: "",
   });
   const { data, isLoading, error } = useQuery({
-    queryKey: ["properties", filter.text, filter.status],
+    queryKey: ["properties", filter.text, filter.status, page],
     queryFn: () =>
       getProperties({
         text: filter.text,
         status: filter.status,
+        type: filter.type,
+        offset: (page - 1) * ITEMS_PER_PAGE,
+        limit: ITEMS_PER_PAGE,
       }),
     staleTime: 1000 * 60 * 5,
     cacheTime: 10 * 60 * 1000,
@@ -32,7 +49,10 @@ const PropertyList = () => {
     // cacheTime: 10 * 60 * 1000,
     // staleTime: 5 * 60 * 1000,
   });
-  const properties = data;
+  if (!data) return null;
+  const properties = data?.properties || [];
+  const total = data.total || 0;
+  const total_pages = Math.ceil(total / ITEMS_PER_PAGE);
   const handleFilterProperty = debounce(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setFilter({
@@ -43,15 +63,21 @@ const PropertyList = () => {
     500
   );
 
-  const handleFilterStats = (value: TProperStatus) => {
+  const handleFilterStats = (value: TProppertyStatusData["value"]) => {
     setFilter({
       ...filter,
       status: value,
     });
-    const foundStatus = statusData.find((item) => item.value === value);
+    const foundStatus = propertyStatusData.find((item) => item.value === value);
     setSelected({
       ...selected,
-      status: value ? foundStatus?.label || "" : "Any Status",
+      statusText: value ? foundStatus?.label || "" : "Any Status",
+    });
+  };
+  const handleFilterByType = (value: TProppertyTypeData["value"]) => {
+    setFilter({
+      ...filter,
+      type: value,
     });
   };
   if (error) return null;
@@ -60,18 +86,7 @@ const PropertyList = () => {
     <div className="p-5 bg-white rounded-2xl">
       <div aria-label="filter" className="flex gap-5 mb-6">
         <div className="rounded-lg p-2.5 bg-grayf7 gap-2.5 flex items-center  basis-[229px]">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M14.4697 15.5303C14.7626 15.8232 15.2374 15.8232 15.5303 15.5303C15.8232 15.2374 15.8232 14.7626 15.5303 14.4697L14.4697 15.5303ZM12.75 7.875C12.75 10.5674 10.5674 12.75 7.875 12.75V14.25C11.3958 14.25 14.25 11.3958 14.25 7.875H12.75ZM7.875 12.75C5.18261 12.75 3 10.5674 3 7.875H1.5C1.5 11.3958 4.35418 14.25 7.875 14.25V12.75ZM3 7.875C3 5.18261 5.18261 3 7.875 3V1.5C4.35418 1.5 1.5 4.35418 1.5 7.875H3ZM7.875 3C10.5674 3 12.75 5.18261 12.75 7.875H14.25C14.25 4.35418 11.3958 1.5 7.875 1.5V3ZM15.5303 14.4697L12.3896 11.329L11.329 12.3896L14.4697 15.5303L15.5303 14.4697Z"
-              fill="#808191"
-            />
-          </svg>
+          <IconSearch></IconSearch>
           <input
             type="text"
             className="w-full text-xs font-medium bg-transparent outline-none"
@@ -80,11 +95,15 @@ const PropertyList = () => {
           />
         </div>
         <Dropdown
-          selected={selected.status}
-          data={statusData}
+          selected={selected.statusText}
+          data={propertyStatusData}
           onClick={handleFilterStats}
         ></Dropdown>
-        <Dropdown selected="Any Type"></Dropdown>
+        <Dropdown
+          selected={selected.typeText}
+          data={propertypeData}
+          onClick={handleFilterByType}
+        ></Dropdown>
         <Dropdown selected="All countries"></Dropdown>
         <Dropdown selected="All States"></Dropdown>
         <button className="flex items-center gap-2.5 rounded-lg bg-grayf7 p-2 text-xs font-medium text-gray80">
@@ -131,14 +150,27 @@ const PropertyList = () => {
         aria-label="pagination"
         className="flex items-center justify-between"
       >
-        <p className="text-gray80">Showing 1 to 10 Propertys</p>
+        <p className="text-gray80">
+          Showing {ITEMS_PER_PAGE * page - 1} to {page * ITEMS_PER_PAGE}
+          Propertys
+        </p>
         <div className="flex items-center gap-[10px]">
-          <button className="flex items-center justify-center text-white rounded-lg w-9 h-9 bg-primary">
-            1
-          </button>
-          <button className="flex items-center justify-center rounded-lg w-9 text-gray80 h-9">
-            2
-          </button>
+          {Array(total_pages)
+            .fill(0)
+            .map((item, index) => (
+              <button
+                key={index}
+                className={twMerge(
+                  "flex items-center justify-center rounded-lg w-9 h-9",
+                  page === index + 1
+                    ? "bg-primary text-white pointer-events-none"
+                    : ""
+                )}
+                onClick={() => setPage(index + 1)}
+              >
+                {index + 1}
+              </button>
+            ))}
         </div>
       </div>
     </div>

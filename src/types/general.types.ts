@@ -8,12 +8,20 @@ export type TDropdownData = {
   label: string;
 };
 
-export type TProperStatus = "sale" | "rent" | "";
+export type TProppertyStatusData = Omit<TDropdownData, "value"> & {
+  value: "" | "sale" | "rent";
+};
+
+export type TProppertyTypeData = Omit<TDropdownData, "value"> & {
+  value: "" | "apartment" | "houses" | "commercial" | "garages" | "lots";
+};
 
 export type TFilter = {
   text?: string;
-  status: TProperStatus;
+  status: TProppertyStatusData["value"];
   country?: string;
-  type?: string;
+  type?: TProppertyTypeData["value"];
   state?: string;
+  offset?: number;
+  limit?: number;
 };
