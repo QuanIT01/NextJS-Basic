@@ -1,15 +1,23 @@
 import HeadContent from "@/components/HeadContent";
 import { LayoutMain } from "@/components/layout";
-import Spinner from "@/components/loading/spinner";
 import PropertyDetails from "@/modules/property/PropertyDetails";
+import { getProperty } from "@/store/property.service";
 import React from "react";
-// https://something.api/property/abc-land -> PropertySlugPage
-const PropertyDetailPage = () => {
+const PropertyDetailsPage = (props: any) => {
   return (
     <LayoutMain>
-      <PropertyDetails></PropertyDetails>
+      <PropertyDetails posts={props.posts}></PropertyDetails>
     </LayoutMain>
   );
 };
-
-export default PropertyDetailPage;
+export async function getServerSideProps(context: any) {
+  if (!context.query.id) return { props: {} };
+  const id = +context.query.id;
+  const posts = await getProperty(id);
+  return {
+    props: {
+      posts: posts || {},
+    },
+  };
+}
+export default PropertyDetailsPage;

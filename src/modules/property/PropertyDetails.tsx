@@ -8,7 +8,6 @@ import { getProperty } from "@/store/property.service";
 import { Spinner } from "@/components/loading";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-/* eslint-disable @next/next/no-img-element */
 import {
   IconBeds,
   IconCall,
@@ -39,7 +38,8 @@ function renderFacilityIcon(item: any): React.ReactNode {
     </>
   );
 }
-const PropertyDetails = () => {
+
+const PropertyDetails = (posts: any) => {
   const router = useRouter();
   const id = parseInt(router.query.id as string);
   const { data, isLoading, error } = useQuery({
@@ -47,6 +47,7 @@ const PropertyDetails = () => {
     queryFn: () => getProperty(id),
     staleTime: 1000 * 60 * 1,
     enabled: !!id,
+    initialData: posts?.posts || {},
   });
   if (!data || error) return null;
   if (isLoading) return <Spinner></Spinner>;
@@ -93,7 +94,7 @@ const PropertyDetails = () => {
                   </div>
                 )}
                 {data.image &&
-                  data.image.slice(1, 3).map((item, index) => (
+                  data.image.slice(1, 3).map((item: string, index: number) => (
                     <div className="relative" key={index}>
                       <Image
                         src={item}
