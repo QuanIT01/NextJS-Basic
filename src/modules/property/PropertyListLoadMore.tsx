@@ -14,13 +14,11 @@ import {
   TProppertyStatusData,
   TProppertyTypeData,
 } from "@/types/general.types";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { IconSearch } from "@/components/icons";
-import { twMerge } from "tailwind-merge";
 import { Button } from "@/components/button";
 
-const PropertyList = () => {
-  const [page, setPage] = useState<number>(1);
+const PropertyListLoadMore = () => {
   const [selected, setSelected] = useState({
     statusText: "Any Status",
     typeText: "Any Type",
@@ -34,16 +32,31 @@ const PropertyList = () => {
     type: "",
     state: "",
   });
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["properties", filter.text, filter.status, page],
-    queryFn: () =>
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    isFetching,
+    isFetchingNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["properties", filter.text, filter.status, filter.type],
+    queryFn: ({ pageParam = 0 }) =>
       getProperties({
         text: filter.text,
         status: filter.status,
         type: filter.type,
-        offset: (page - 1) * ITEMS_PER_PAGE,
         limit: ITEMS_PER_PAGE,
+        offset: pageParam,
       }),
+    getNextPageParam: (lastPage, pasges) => {
+      const properties = lastPage?.properties || [];
+      if (properties?.length < ITEMS_PER_PAGE) {
+        return undefined;
+      }
+      return properties.length + (lastPage?.offset || 0);
+    },
     staleTime: 1000 * 60 * 5,
     cacheTime: 10 * 60 * 1000,
     // refetchOnWindowFocus: false,
@@ -51,9 +64,7 @@ const PropertyList = () => {
     // staleTime: 5 * 60 * 1000,
   });
   if (!data) return null;
-  const properties = data?.properties || [];
-  const total = data.total || 0;
-  const total_pages = Math.ceil(total / ITEMS_PER_PAGE);
+
   const handleFilterProperty = debounce(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setFilter({
@@ -82,7 +93,9 @@ const PropertyList = () => {
     });
   };
 
-  const handleLoadMore = () => {};
+  const handleLoadMore = () => {
+    hasNextPage && fetchNextPage();
+  };
   if (error) return null;
 
   return (
@@ -142,48 +155,28 @@ const PropertyList = () => {
             .map((item, index) => (
               <PropertyItemLoading key={index}></PropertyItemLoading>
             ))}
-        {!isLoading &&
-          properties &&
-          properties.length > 0 &&
-          properties.map((item: PropertyItemData) => (
-            <PropertyItem item={item} key={item.id}></PropertyItem>
-          ))}
+        {data.pages.map((page, index) => (
+          <React.Fragment key={index}>
+            {page?.properties &&
+              page?.properties.length > 0 &&
+              page?.properties.map((item: PropertyItemData) => (
+                <PropertyItem item={item} key={item.id}></PropertyItem>
+              ))}
+          </React.Fragment>
+        ))}
       </div>
-      <Button
-        className="mx-auto text-sm font-medium rounded-lg"
-        onClick={handleLoadMore}
-      >
-        Lore More
-      </Button>
-      <div
-        aria-label="pagination"
-        className="flex items-center justify-between"
-      >
-        <p className="text-gray80">
-          Showing {ITEMS_PER_PAGE * page - 1} to {page * ITEMS_PER_PAGE}
-          Propertys
-        </p>
-        <div className="flex items-center gap-[10px]">
-          {Array(total_pages)
-            .fill(0)
-            .map((item, index) => (
-              <button
-                key={index}
-                className={twMerge(
-                  "flex items-center justify-center rounded-lg w-9 h-9",
-                  page === index + 1
-                    ? "bg-primary text-white pointer-events-none"
-                    : ""
-                )}
-                onClick={() => setPage(index + 1)}
-              >
-                {index + 1}
-              </button>
-            ))}
-        </div>
-      </div>
+      {hasNextPage && (
+        <Button
+          isLoading={isFetchingNextPage || isFetching}
+          className="w-24 mx-auto text-sm font-medium rounded-lg"
+          onClick={handleLoadMore}
+          disabled={!hasNextPage || isFetchingNextPage}
+        >
+          Lore More
+        </Button>
+      )}
     </div>
   );
 };
 
-export default PropertyList;
+export default PropertyListLoadMore;

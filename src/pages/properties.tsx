@@ -1,11 +1,7 @@
 import Link from "next/link";
-import PropertyItem from "@/modules/property/PropertyItem";
+import PropertyListLoadMore from "@/modules/property/PropertyListLoadMore";
 import React from "react";
-import { getProperties } from "@/store/property.service";
 import { LayoutMain } from "@/components/layout";
-import { PropertyItemData } from "@/types/property.types";
-import { useQuery } from "@tanstack/react-query";
-import PropertyList from "@/modules/property/PropertyList";
 
 const PropertyPage = () => {
   return (
@@ -21,7 +17,7 @@ const PropertyPage = () => {
           + Add Property
         </Link>
       </div>
-      <PropertyList></PropertyList>
+      <PropertyListLoadMore></PropertyListLoadMore>
     </LayoutMain>
   );
 };
