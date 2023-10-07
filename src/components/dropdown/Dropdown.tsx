@@ -2,17 +2,15 @@ import { Menu } from "@headlessui/react";
 import React from "react";
 import { TDropdownData, TProppertyStatusData } from "../../types/general.types";
 
-interface DropdownProps {
+interface DropdownProps<TData> {
   selected?: string;
-  data?: TDropdownData[];
-  onClick?: (value: any) => void;
+  data?: TData[];
+  // onClick?: (value: TData) => void;
+  renderItems?: (item: TData) => React.ReactNode;
 }
 
-const Dropdown = ({
-  selected = "Any Status",
-  data = [],
-  onClick,
-}: DropdownProps) => {
+const Dropdown = <TData,>(props: DropdownProps<TData>) => {
+  const { selected, renderItems, data = [] } = props;
   return (
     <Menu as="div" className="relative basis-[160px]">
       {({ open }) => (
@@ -42,22 +40,29 @@ const Dropdown = ({
             as="div"
             className="absolute left-0 right-0 z-10 rounded-lg top-full bg-grayfc shadow-dropdown"
           >
-            {data.length > 0 &&
-              data.map((item) => (
-                <Menu.Item
-                  key={item.value}
-                  as="div"
-                  className="p-2 text-sm font-medium rounded-lg cursor-pointer text-gray80 hover:text-grayfc hover:bg-primary"
-                  data-value={item.value}
-                  onClick={() => onClick?.(item.value as any)}
-                >
-                  {item.label}
-                </Menu.Item>
-              ))}
+            {data.length > 0 && data.map((item) => renderItems?.(item))}
           </Menu.Items>
         </>
       )}
     </Menu>
+  );
+};
+
+export const DropdownItem = ({
+  children,
+  onClick,
+}: {
+  children?: React.ReactNode;
+  onClick?: () => void;
+}) => {
+  return (
+    <Menu.Item
+      as="div"
+      className="p-2 text-sm font-medium rounded-lg cursor-pointer text-gray80 hover:text-grayfc hover:bg-primary"
+      onClick={onClick}
+    >
+      {children}
+    </Menu.Item>
   );
 };
 

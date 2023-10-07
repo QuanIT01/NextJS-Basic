@@ -1,4 +1,4 @@
-import Dropdown from "@/components/dropdown/Dropdown";
+import Dropdown, { DropdownItem } from "@/components/dropdown/Dropdown";
 import PropertyItem, { PropertyItemLoading } from "./PropertyItem";
 import React, { useState } from "react";
 import { debounce } from "lodash";
@@ -17,6 +17,7 @@ import {
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { IconSearch } from "@/components/icons";
 import { Button } from "@/components/button";
+import { Menu } from "@headlessui/react";
 
 const PropertyListLoadMore = () => {
   const [selected, setSelected] = useState({
@@ -75,7 +76,7 @@ const PropertyListLoadMore = () => {
     500
   );
 
-  const handleFilterStats = (value: TProppertyStatusData["value"]) => {
+  const handleFilterByStatus = (value: TProppertyStatusData["value"]) => {
     setFilter({
       ...filter,
       status: value,
@@ -113,12 +114,26 @@ const PropertyListLoadMore = () => {
         <Dropdown
           selected={selected.statusText}
           data={propertyStatusData}
-          onClick={handleFilterStats}
+          renderItems={(item) => (
+            <DropdownItem
+              key={item.value}
+              onClick={() => handleFilterByStatus(item.value)}
+            >
+              {item.label}
+            </DropdownItem>
+          )}
         ></Dropdown>
         <Dropdown
           selected={selected.typeText}
           data={propertypeData}
-          onClick={handleFilterByType}
+          renderItems={(item) => (
+            <DropdownItem
+              key={item.value}
+              onClick={() => handleFilterByType(item.value)}
+            >
+              {item.label}
+            </DropdownItem>
+          )}
         ></Dropdown>
         <Dropdown selected="All countries"></Dropdown>
         <Dropdown selected="All States"></Dropdown>
